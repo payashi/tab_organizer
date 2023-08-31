@@ -17,17 +17,33 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: FutureBuilder(
-        initialData: 'init',
-        future: getUrl(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data!);
-          } else {
-            return const Text('no data');
-          }
-        },
-      )),
+        child: Column(
+          children: [
+            FutureBuilder<String>(
+              initialData: 'init',
+              future: getTabs(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data ?? 'empty');
+                } else {
+                  return const Text('no data');
+                }
+              },
+            ),
+            // FutureBuilder(
+            //   initialData: 'init',
+            //   future: getUrl(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       return Text(snapshot.data!);
+            //     } else {
+            //       return const Text('no data');
+            //     }
+            //   },
+            // ),
+          ],
+        ),
+      ),
     );
   }
 }
