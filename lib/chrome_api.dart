@@ -9,18 +9,11 @@ import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 import 'models/chrome_tab.dart';
 
-@JS('getUrl')
-external Object _getUrl();
+@JS('queryTabs')
+external Object _queryTabs(QueryOptions options);
 
-Future<String> getUrl() async {
-  return promiseToFuture<String>(_getUrl());
-}
-
-@JS('getTabs')
-external Object _getTabs(QueryOptions options);
-
-Future<List<ChromeTab>> getTabs(QueryOptions options) async {
-  final response = await promiseToFuture<String>(_getTabs(options));
+Future<List<ChromeTab>> queryTabs(QueryOptions options) async {
+  final response = await promiseToFuture<String>(_queryTabs(options));
   final tabs = (json.decode(response) as List)
       .map<ChromeTab>((i) => ChromeTab.fromJson(i))
       .toList();

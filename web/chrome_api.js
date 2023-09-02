@@ -4,7 +4,7 @@ async function getUrl() {
     return tab.url;
 }
 
-async function getTabs(options) {
+async function queryTabs(options) {
     let tabs = await chrome.tabs.query(options);
     let data = tabs.map(tab => {
         return {

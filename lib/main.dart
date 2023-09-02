@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
             Flexible(
               child: FutureBuilder<List<ChromeTab>>(
                 initialData: const [],
-                future: getTabs(QueryOptions()),
+                future: queryTabs(QueryOptions()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
