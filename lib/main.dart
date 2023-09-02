@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tab_organizer/chrome_api.dart';
+import 'package:tab_organizer/models/chrome_tab.dart';
 
 void main() {
   // runApp(const HomeScreen());
@@ -19,28 +20,24 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            FutureBuilder<String>(
-              initialData: 'init',
-              future: getTabs(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data ?? 'empty');
-                } else {
-                  return const Text('no data');
-                }
-              },
+            Flexible(
+              child: FutureBuilder<List<ChromeTab>>(
+                initialData: const [],
+                future: getTabs(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, idx) => ListTile(
+                        title: Text('$idx: ${snapshot.data![idx].title}'),
+                      ),
+                    );
+                  } else {
+                    return const Text('no data');
+                  }
+                },
+              ),
             ),
-            // FutureBuilder(
-            //   initialData: 'init',
-            //   future: getUrl(),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.hasData) {
-            //       return Text(snapshot.data!);
-            //     } else {
-            //       return const Text('no data');
-            //     }
-            //   },
-            // ),
           ],
         ),
       ),

@@ -3,8 +3,11 @@
 @JS()
 library chrome_api;
 
+import 'dart:convert';
+
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
+import 'models/chrome_tab.dart';
 
 @JS('getUrl')
 external Object _getUrl();
@@ -16,9 +19,19 @@ Future<String> getUrl() async {
 @JS('getTabs')
 external Object _getTabs();
 
-Future<String> getTabs() async {
-  // TODO: Cast String to List<ChromeTab> with ChromeTab.fromJson
-  // See Also: https://medium.com/teamarimac/working-with-list-of-json-objects-flutter-json-serializable-db1b6e1805aa
-  final raw = await promiseToFuture<String>(_getTabs());
-  return raw;
+// See Also: https://medium.com/teamarimac/working-with-list-of-json-objects-flutter-json-serializable-db1b6e1805aa
+Future<List<ChromeTab>> getTabs() async {
+  final response = await promiseToFuture<String>(_getTabs());
+  final tabs = (json.decode(response) as List)
+      .map<ChromeTab>((i) => ChromeTab.fromJson(i))
+      .toList();
+  return tabs;
+  // return const [
+  //   ChromeTab(
+  //     active: true,
+  //     groupId: 0,
+  //     id: 0,
+  //     index: 0,
+  //   ),
+  // ];
 }
