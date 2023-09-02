@@ -17,21 +17,38 @@ Future<String> getUrl() async {
 }
 
 @JS('getTabs')
-external Object _getTabs();
+external Object _getTabs(QueryOptions options);
 
-// See Also: https://medium.com/teamarimac/working-with-list-of-json-objects-flutter-json-serializable-db1b6e1805aa
-Future<List<ChromeTab>> getTabs() async {
-  final response = await promiseToFuture<String>(_getTabs());
+Future<List<ChromeTab>> getTabs(QueryOptions options) async {
+  final response = await promiseToFuture<String>(_getTabs(options));
   final tabs = (json.decode(response) as List)
       .map<ChromeTab>((i) => ChromeTab.fromJson(i))
       .toList();
   return tabs;
-  // return const [
-  //   ChromeTab(
-  //     active: true,
-  //     groupId: 0,
-  //     id: 0,
-  //     index: 0,
-  //   ),
-  // ];
+}
+
+@JS()
+@anonymous
+class QueryOptions {
+  external bool get active;
+  external bool get currentWindow;
+  external bool get highlited;
+
+  external num get index;
+  external num get groupId;
+  external num get windowId;
+
+  external String get title;
+  external String get url;
+
+  external factory QueryOptions({
+    bool active,
+    bool currentWindow,
+    bool highlighted,
+    num index,
+    num groupId,
+    num windowId,
+    String title,
+    String url,
+  });
 }
