@@ -1,19 +1,20 @@
-class ChromeTab {
-  final bool active;
-  final String? favIconUrl;
-  final num groupId;
-  final num id;
-  final num index;
-  final String? title;
-  final String? url;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ChromeTab({
-    required this.active,
-    this.favIconUrl,
-    required this.groupId,
-    required this.id,
-    required this.index,
-    this.title,
-    this.url,
-  });
+part 'chrome_tab.freezed.dart';
+part 'chrome_tab.g.dart';
+
+@freezed
+class ChromeTab with _$ChromeTab {
+  const factory ChromeTab({
+    required bool active,
+    required num groupId,
+    required num id,
+    required num index,
+    @Default('') String favIconUrl,
+    @Default('') String title,
+    @Default('') String url,
+  }) = _ChromeTab;
+
+  factory ChromeTab.fromJson(Map<String, dynamic> json) =>
+      _$ChromeTabFromJson(json);
 }
