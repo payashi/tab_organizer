@@ -20,5 +20,8 @@
             "32": "icons/Icon-192.png",
             "48": "icons/Icon-192.png",
             "128": "icons/Icon-192.png"
-    }
+    },
+    "permissions": [
+        "tabs"
+    ]
 }
