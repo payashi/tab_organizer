@@ -9,12 +9,9 @@ async function queryTabs(options) {
             index: tab.index,
             title: tab.title,
             url: tab.url,
+            windowId: tab.windowId,
         };
     });
 
     return JSON.stringify(data);
 }
-
-// async function highlightTab(idx){
-//     await chrome.tabs.highlight({tabs: idx});
-// }

@@ -57,6 +57,7 @@ class QueryOptions {
 @anonymous
 class HighlightOptions {
   external num get tabs;
+  external num get windowId;
 
-  external factory HighlightOptions({num tabs});
+  external factory HighlightOptions({num tabs, num windowId});
 }

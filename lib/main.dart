@@ -19,21 +19,20 @@ class PopupScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Scaffold(
-      body: Column(
+    return Scaffold(
+      body: const Column(
         children: [
           TabListView(),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Future.delayed(const Duration(seconds: 1));
+          await ref.read(tabListProvider.notifier).fetch();
+        },
+        child: const Icon(Icons.auto_awesome),
+      ),
     );
-  }
-}
-
-class SortButton extends HookConsumerWidget {
-  const SortButton({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
   }
 }
 
@@ -58,7 +57,8 @@ class TabListView extends HookConsumerWidget {
 
   Widget _tile(ChromeTab tab) {
     return ListTile(
-      tileColor: Colors.white70,
+      hoverColor: Colors.amber.shade50,
+      tileColor: Colors.grey.shade50,
       leading: Image.network(
         tab.favIconUrl,
         width: 32,
@@ -73,7 +73,10 @@ class TabListView extends HookConsumerWidget {
         overflow: TextOverflow.ellipsis,
       ),
       onTap: () {
-        hightlightTab(HighlightOptions(tabs: tab.index));
+        hightlightTab(HighlightOptions(
+          tabs: tab.index,
+          windowId: tab.windowId,
+        ));
       },
     );
   }

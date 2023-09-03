@@ -4,10 +4,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class TabListNotifier extends StateNotifier<AsyncValue<List<ChromeTab>>> {
   TabListNotifier() : super(const AsyncValue.loading()) {
-    _fetch();
+    fetch();
   }
 
-  Future<void> _fetch() async {
+  Future<void> fetch() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => queryTabs(QueryOptions()));
   }
