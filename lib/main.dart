@@ -1,46 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tab_organizer/providers/tab_list_provider.dart';
 
 void main() {
-  // runApp(const HomeScreen());
   runApp(
-    const MaterialApp(
-      home: HomeScreen(),
+    const ProviderScope(
+      child: MaterialApp(
+        home: PopupScreen(),
+      ),
     ),
   );
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class PopupScreen extends HookConsumerWidget {
+  const PopupScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Flexible(
-              child: FutureBuilder<List<ChromeTab>>(
-                initialData: const [],
-                future: queryTabs(QueryOptions()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, idx) => ListTile(
-                        title: Text('$idx: ${snapshot.data![idx].title}'),
-                      ),
-                    );
-                  } else {
-                    return const Text('no data');
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Scaffold(
+      body: Column(
+        children: [
+          TabListView(),
+        ],
       ),
+    );
+  }
+}
+
+class TabListView extends HookConsumerWidget {
+  const TabListView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(tabListProvider).when(
+          loading: CircularProgressIndicator.new,
+          error: (error, _) => Text(error.toString()),
+          data: (tabs) {
+            return Flexible(
+              child: ListView.builder(
+                itemCount: tabs.length,
+                itemBuilder: (context, idx) => _tile(tabs[idx]),
+              ),
+            );
+          },
+        );
+  }
+
+  Widget _tile(ChromeTab tab) {
+    return ListTile(
+      leading: Image.network(
+        tab.favIconUrl,
+        width: 64,
+        height: 64,
+        errorBuilder: (context, object, _) =>
+            const Icon(Icons.error, color: Colors.red),
+      ),
+      title: Text('[]${tab.title}'),
+      // TODO: Focus the tab on clicked with tabs API
+      // onTap: () => _launchUrl(),
     );
   }
 }
