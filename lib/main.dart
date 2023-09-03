@@ -29,6 +29,14 @@ class PopupScreen extends HookConsumerWidget {
   }
 }
 
+class SortButton extends HookConsumerWidget {
+  const SortButton({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container();
+  }
+}
+
 class TabListView extends HookConsumerWidget {
   const TabListView({super.key});
 
@@ -50,16 +58,23 @@ class TabListView extends HookConsumerWidget {
 
   Widget _tile(ChromeTab tab) {
     return ListTile(
+      tileColor: Colors.white70,
       leading: Image.network(
         tab.favIconUrl,
-        width: 64,
-        height: 64,
-        errorBuilder: (context, object, _) =>
-            const Icon(Icons.error, color: Colors.red),
+        width: 32,
+        height: 32,
+        errorBuilder: (context, object, _) => const Icon(
+          Icons.public,
+          size: 32,
+        ),
       ),
-      title: Text('[]${tab.title}'),
-      // TODO: Focus the tab on clicked with tabs API
-      // onTap: () => _launchUrl(),
+      title: Text(
+        tab.title,
+        overflow: TextOverflow.ellipsis,
+      ),
+      onTap: () {
+        hightlightTab(HighlightOptions(tabs: tab.index));
+      },
     );
   }
 }

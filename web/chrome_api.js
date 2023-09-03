@@ -1,9 +1,3 @@
-async function getUrl() {
-    let queryOptions = { active: true, currentWindow: true };
-    let [tab] = await chrome.tabs.query(queryOptions);
-    return tab.url;
-}
-
 async function queryTabs(options) {
     let tabs = await chrome.tabs.query(options);
     let data = tabs.map(tab => {
@@ -20,3 +14,7 @@ async function queryTabs(options) {
 
     return JSON.stringify(data);
 }
+
+// async function highlightTab(idx){
+//     await chrome.tabs.highlight({tabs: idx});
+// }
