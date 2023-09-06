@@ -20,6 +20,13 @@ Future<List<ChromeTab>> queryTabs(QueryOptions options) async {
   return tabs;
 }
 
+@JS('chrome.tabs.highlight')
+external Object _highlightTab(HighlightOptions options);
+
+Future<void> hightlightTab(HighlightOptions options) async {
+  _highlightTab(options);
+}
+
 @JS()
 @anonymous
 class QueryOptions {
@@ -44,4 +51,13 @@ class QueryOptions {
     String title,
     String url,
   });
+}
+
+@JS()
+@anonymous
+class HighlightOptions {
+  external num get tabs;
+  external num get windowId;
+
+  external factory HighlightOptions({num tabs, num windowId});
 }

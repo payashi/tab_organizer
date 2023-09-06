@@ -23,6 +23,7 @@ mixin _$ChromeTab {
   bool get active => throw _privateConstructorUsedError;
   num get groupId => throw _privateConstructorUsedError;
   num get id => throw _privateConstructorUsedError;
+  num get windowId => throw _privateConstructorUsedError;
   num get index => throw _privateConstructorUsedError;
   String get favIconUrl => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
@@ -43,6 +44,7 @@ abstract class $ChromeTabCopyWith<$Res> {
       {bool active,
       num groupId,
       num id,
+      num windowId,
       num index,
       String favIconUrl,
       String title,
@@ -65,6 +67,7 @@ class _$ChromeTabCopyWithImpl<$Res, $Val extends ChromeTab>
     Object? active = null,
     Object? groupId = null,
     Object? id = null,
+    Object? windowId = null,
     Object? index = null,
     Object? favIconUrl = null,
     Object? title = null,
@@ -82,6 +85,10 @@ class _$ChromeTabCopyWithImpl<$Res, $Val extends ChromeTab>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as num,
+      windowId: null == windowId
+          ? _value.windowId
+          : windowId // ignore: cast_nullable_to_non_nullable
               as num,
       index: null == index
           ? _value.index
@@ -114,6 +121,7 @@ abstract class _$$_ChromeTabCopyWith<$Res> implements $ChromeTabCopyWith<$Res> {
       {bool active,
       num groupId,
       num id,
+      num windowId,
       num index,
       String favIconUrl,
       String title,
@@ -134,6 +142,7 @@ class __$$_ChromeTabCopyWithImpl<$Res>
     Object? active = null,
     Object? groupId = null,
     Object? id = null,
+    Object? windowId = null,
     Object? index = null,
     Object? favIconUrl = null,
     Object? title = null,
@@ -151,6 +160,10 @@ class __$$_ChromeTabCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as num,
+      windowId: null == windowId
+          ? _value.windowId
+          : windowId // ignore: cast_nullable_to_non_nullable
               as num,
       index: null == index
           ? _value.index
@@ -179,6 +192,7 @@ class _$_ChromeTab implements _ChromeTab {
       {required this.active,
       required this.groupId,
       required this.id,
+      required this.windowId,
       required this.index,
       this.favIconUrl = '',
       this.title = '',
@@ -194,6 +208,8 @@ class _$_ChromeTab implements _ChromeTab {
   @override
   final num id;
   @override
+  final num windowId;
+  @override
   final num index;
   @override
   @JsonKey()
@@ -207,7 +223,7 @@ class _$_ChromeTab implements _ChromeTab {
 
   @override
   String toString() {
-    return 'ChromeTab(active: $active, groupId: $groupId, id: $id, index: $index, favIconUrl: $favIconUrl, title: $title, url: $url)';
+    return 'ChromeTab(active: $active, groupId: $groupId, id: $id, windowId: $windowId, index: $index, favIconUrl: $favIconUrl, title: $title, url: $url)';
   }
 
   @override
@@ -218,6 +234,8 @@ class _$_ChromeTab implements _ChromeTab {
             (identical(other.active, active) || other.active == active) &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.windowId, windowId) ||
+                other.windowId == windowId) &&
             (identical(other.index, index) || other.index == index) &&
             (identical(other.favIconUrl, favIconUrl) ||
                 other.favIconUrl == favIconUrl) &&
@@ -227,8 +245,8 @@ class _$_ChromeTab implements _ChromeTab {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, active, groupId, id, index, favIconUrl, title, url);
+  int get hashCode => Object.hash(runtimeType, active, groupId, id, windowId,
+      index, favIconUrl, title, url);
 
   @JsonKey(ignore: true)
   @override
@@ -249,6 +267,7 @@ abstract class _ChromeTab implements ChromeTab {
       {required final bool active,
       required final num groupId,
       required final num id,
+      required final num windowId,
       required final num index,
       final String favIconUrl,
       final String title,
@@ -263,6 +282,8 @@ abstract class _ChromeTab implements ChromeTab {
   num get groupId;
   @override
   num get id;
+  @override
+  num get windowId;
   @override
   num get index;
   @override

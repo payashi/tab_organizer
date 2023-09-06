@@ -9,6 +9,7 @@ class ChromeTab with _$ChromeTab {
     required bool active,
     required num groupId,
     required num id,
+    required num windowId,
     required num index,
     @Default('') String favIconUrl,
     @Default('') String title,
