@@ -7,10 +7,10 @@ part 'chrome_tab.g.dart';
 class ChromeTab with _$ChromeTab {
   const factory ChromeTab({
     required bool active,
-    required num groupId,
-    required num id,
-    required num windowId,
-    required num index,
+    required int groupId,
+    required int id,
+    required int windowId,
+    required int index,
     @Default('') String favIconUrl,
     @Default('') String title,
     @Default('') String url,

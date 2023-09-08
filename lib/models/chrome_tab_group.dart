@@ -19,9 +19,9 @@ enum TabGroupColor {
 class ChromeTabGroup with _$ChromeTabGroup {
   const factory ChromeTabGroup({
     required bool collapsed,
-    required TabGroupColor color,
-    required num id,
-    required num windowId,
+    required String color,
+    required int id,
+    required int windowId,
     @Default('') String title,
   }) = _ChromeTabGroup;
 

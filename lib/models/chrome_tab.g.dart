@@ -8,10 +8,10 @@ part of 'chrome_tab.dart';
 
 _$_ChromeTab _$$_ChromeTabFromJson(Map<String, dynamic> json) => _$_ChromeTab(
       active: json['active'] as bool,
-      groupId: json['groupId'] as num,
-      id: json['id'] as num,
-      windowId: json['windowId'] as num,
-      index: json['index'] as num,
+      groupId: json['groupId'] as int,
+      id: json['id'] as int,
+      windowId: json['windowId'] as int,
+      index: json['index'] as int,
       favIconUrl: json['favIconUrl'] as String? ?? '',
       title: json['title'] as String? ?? '',
       url: json['url'] as String? ?? '',

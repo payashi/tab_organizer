@@ -16,6 +16,11 @@ async function queryTabs(options) {
     return JSON.stringify(data);
 }
 
+async function getTabGroupTitle(groupId) {
+    let group = await chrome.tabGroups.get(groupId);
+    return group.title;
+}
+
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     const data = {
         trigger: 'chrome.tabs.onUpdated',
