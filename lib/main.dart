@@ -3,11 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tab_organizer/models/chrome_tab_group.dart';
-import 'package:tab_organizer/providers/tab_list_provider.dart';
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
+
+import 'package:tab_organizer/providers/category_map_notifier.dart';
 
 void main() async {
   await dotenv.load();
@@ -27,26 +27,31 @@ class PopupScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to tab update event
     document.on['tabUpdated'].listen((Event event) {
-      ref.read(tabListProvider.notifier).fetchTabs();
+      ref.read(categoryMapNotifier.notifier).fetchTabs();
     });
-    return ref.watch(tabListProvider).when(
+
+    return ref.watch<AsyncValue<CategoryMap>>(categoryMapNotifier).when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => Text(error.toString()),
-          data: (tabs) {
+          error: (error, _) => Scaffold(
+            body: Center(child: Text(error.toString())),
+          ),
+          data: (categoryMap) {
             return Scaffold(
-              body: Column(
-                children: [
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: tabs.length,
-                      itemBuilder: (context, idx) => _tile(tabs[idx]),
-                    ),
-                  ),
-                ],
+              body: SingleChildScrollView(
+                child: Column(
+                  children: categoryMap.entries.map<Widget>((entry) {
+                    final tabs = entry.value;
+                    return ExpansionTile(
+                      initiallyExpanded: true,
+                      title: Text(entry.key.toString()),
+                      children: tabs.map((tab) => _tile(tab)).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  await ref.read(tabListProvider.notifier).classify();
+                  await ref.read(categoryMapNotifier.notifier).classify();
                 },
                 child: const Icon(Icons.auto_awesome),
               ),
@@ -72,7 +77,11 @@ class PopupScreen extends HookConsumerWidget {
         tab.title,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text('${tab.windowId}/${tab.groupId}/${tab.index}/${tab.id}'),
+      // subtitle: Text('${tab.windowId}/${tab.groupId}/${tab.index}/${tab.id}'),
+      subtitle: Text(
+        tab.url,
+        overflow: TextOverflow.ellipsis,
+      ),
       onTap: () async {
         await hightlightTabs(TabsHighlightInfo(
           tabs: [tab.index],

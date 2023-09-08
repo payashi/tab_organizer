@@ -7,17 +7,25 @@ import 'dart:convert';
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
+import 'package:tab_organizer/providers/category_map_notifier.dart';
 import 'models/chrome_tab.dart';
 
 @JS('queryTabs')
 external Object _queryTabs(TabsQueryInfo info);
 
-Future<List<ChromeTab>> queryTabs(TabsQueryInfo info) async {
+Future<CategoryMap> queryTabs(TabsQueryInfo info) async {
   final response = await promiseToFuture<String>(_queryTabs(info));
   final tabs = (json.decode(response) as List)
       .map<ChromeTab>((i) => ChromeTab.fromJson(i))
       .toList();
-  return tabs;
+
+  // Convert List<ChromeTab> to Map<num, List<ChromeTab>>
+  CategoryMap categoryMap = <num, List<ChromeTab>>{};
+  for (final tab in tabs) {
+    categoryMap.putIfAbsent(tab.groupId, () => []).add(tab);
+  }
+
+  return categoryMap;
 }
 
 @JS('chrome.tabs.highlight')
@@ -64,6 +72,17 @@ external Object _updateTabGroups(
 Future<void> updateTabGroups(
     num groupId, TabGroupsUpdateProperties properties) async {
   _updateTabGroups(groupId, properties);
+}
+
+@JS('chrome.tabGroups.move')
+external Object _moveTabGroups(
+  num groupId,
+  TabGroupsMoveProperties properties,
+);
+
+Future<void> moveTabGroups(
+    num groupId, TabGroupsMoveProperties properties) async {
+  _moveTabGroups(groupId, properties);
 }
 
 @JS()
@@ -151,5 +170,17 @@ class TabGroupsUpdateProperties {
     bool? collapsed,
     String? color,
     String? title,
+  });
+}
+
+@JS()
+@anonymous
+class TabGroupsMoveProperties {
+  external num index;
+  external num? windowId;
+
+  external factory TabGroupsMoveProperties({
+    num index,
+    num? windowId,
   });
 }
