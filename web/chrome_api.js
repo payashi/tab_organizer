@@ -17,15 +17,30 @@ async function queryTabs(options) {
 }
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    // TODO: Add onCreated and onRemoved listener
-    // TODO: Prevent dispatching when the status is loading
     const data = {
+        trigger: 'chrome.tabs.onUpdated',
         tabId: tabId,
         changeInfo: changeInfo,
         tab: tab,
     };
+    if (changeInfo.status == 'complete') {
+        const event = new CustomEvent('tabUpdated', {
+            'detail': JSON.stringify(data),
+        });
+        document.dispatchEvent(event);
+    }
+});
+
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+    const data = {
+        trigger: 'chrome.tabs.onRemoved',
+        tabId: tabId,
+        removeInfo: removeInfo,
+    };
+
     const event = new CustomEvent('tabUpdated', {
         'detail': JSON.stringify(data),
     });
     document.dispatchEvent(event);
 });
+

@@ -9,7 +9,7 @@ class TabListNotifier extends StateNotifier<AsyncValue<List<ChromeTab>>> {
 
   Future<void> fetch() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => queryTabs(QueryOptions()));
+    state = await AsyncValue.guard(() => queryTabs(QueryInfo()));
   }
 }
 
