@@ -8,12 +8,13 @@ import 'dart:html';
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
+import 'package:tab_organizer/models/chrome_tab_group.dart';
 import 'models/chrome_tab.dart';
 
 @JS('queryTabs')
-external Object _queryTabs(QueryInfo info);
+external Object _queryTabs(TabsQueryInfo info);
 
-Future<List<ChromeTab>> queryTabs(QueryInfo info) async {
+Future<List<ChromeTab>> queryTabs(TabsQueryInfo info) async {
   final response = await promiseToFuture<String>(_queryTabs(info));
   final tabs = (json.decode(response) as List)
       .map<ChromeTab>((i) => ChromeTab.fromJson(i))
@@ -22,26 +23,26 @@ Future<List<ChromeTab>> queryTabs(QueryInfo info) async {
 }
 
 @JS('chrome.tabs.highlight')
-external Object _highlightTabs(HighlightInfo info);
+external Object _highlightTabs(TabsHighlightInfo info);
 
-Future<void> hightlightTabs(HighlightInfo info) async {
+Future<void> hightlightTabs(TabsHighlightInfo info) async {
   _highlightTabs(info);
 }
 
 @JS('chrome.tabs.move')
 external Object _moveTabs(
   List<num> tabIds,
-  MoveProperties properties,
+  TabsMoveProperties properties,
 );
 
-Future<void> moveTabs(List<num> tabIds, MoveProperties properties) async {
+Future<void> moveTabs(List<num> tabIds, TabsMoveProperties properties) async {
   _moveTabs(tabIds, properties);
 }
 
 @JS('chrome.tabs.group')
-external Object _groupTabs(GroupOptions options);
+external Object _groupTabs(TabsGroupOptions options);
 
-Future<num> groupTabs(GroupOptions options) async {
+Future<num> groupTabs(TabsGroupOptions options) async {
   final groupId = await promiseToFuture<num>(_groupTabs(options));
   return groupId;
 }
@@ -49,16 +50,27 @@ Future<num> groupTabs(GroupOptions options) async {
 @JS('chrome.windows.update')
 external Object _updateWindows(
   num windowId,
-  UpdateInfo info,
+  WindowsUpdateInfo info,
 );
 
-Future<void> updateWindows(num windowId, UpdateInfo info) async {
+Future<void> updateWindows(num windowId, WindowsUpdateInfo info) async {
   _updateWindows(windowId, info);
+}
+
+@JS('chrome.tabGroups.update')
+external Object _updateTabGroups(
+  num groupId,
+  TabGroupsUpdateProperties properties,
+);
+
+Future<void> updateTabGroups(
+    num groupId, TabGroupsUpdateProperties properties) async {
+  _updateTabGroups(groupId, properties);
 }
 
 @JS()
 @anonymous
-class QueryInfo {
+class TabsQueryInfo {
   external bool? get active;
   external bool? get currentWindow;
   external bool? get highlited;
@@ -70,7 +82,7 @@ class QueryInfo {
   external String? get title;
   external String? get url;
 
-  external factory QueryInfo({
+  external factory TabsQueryInfo({
     bool? active,
     bool? currentWindow,
     bool? highlighted,
@@ -84,46 +96,62 @@ class QueryInfo {
 
 @JS()
 @anonymous
-class HighlightInfo {
+class TabsHighlightInfo {
   external List<num> get tabs; // tab indicies to highlight
   external num? get windowId; // the window that contains the tabs
 
-  external factory HighlightInfo({List<num> tabs, num? windowId});
+  external factory TabsHighlightInfo({List<num> tabs, num? windowId});
 }
 
 @JS()
 @anonymous
-class MoveProperties {
+class TabsMoveProperties {
   external num get index;
   external num? get windowId;
 
-  external factory MoveProperties({num index, num? windowId});
+  external factory TabsMoveProperties({num index, num? windowId});
 }
 
 @JS()
 @anonymous
-class GroupOptions {
-  external CreateProperties? properties;
+class TabsGroupOptions {
+  external TabsGroupOptionsCreateProperties? properties;
   external num? groupId;
   external List<num> tabIds;
 
-  external factory GroupOptions(
-      {CreateProperties? properties, num? groupId, List<num> tabIds});
+  external factory TabsGroupOptions(
+      {TabsGroupOptionsCreateProperties? properties,
+      num? groupId,
+      List<num> tabIds});
 }
 
 @JS()
 @anonymous
-class CreateProperties {
+class TabsGroupOptionsCreateProperties {
   external num? windowId;
 
-  external factory CreateProperties({num? windowId});
+  external factory TabsGroupOptionsCreateProperties({num? windowId});
 }
 
 @JS()
 @anonymous
-class UpdateInfo {
+class WindowsUpdateInfo {
   external bool? drawAttention;
   external bool? focused;
 
-  external factory UpdateInfo({bool? drawAttention, bool? focused});
+  external factory WindowsUpdateInfo({bool? drawAttention, bool? focused});
+}
+
+@JS()
+@anonymous
+class TabGroupsUpdateProperties {
+  external bool? collapsed;
+  external String? color;
+  external String? title;
+
+  external factory TabGroupsUpdateProperties({
+    bool? collapsed,
+    String? color,
+    String? title,
+  });
 }

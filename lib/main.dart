@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tab_organizer/models/chrome_tab_group.dart';
 import 'package:tab_organizer/providers/tab_list_provider.dart';
 
 // ignore: avoid_web_libraries_in_flutter
@@ -45,11 +46,17 @@ class PopupScreen extends HookConsumerWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  // await Future.delayed(const Duration(seconds: 1));
                   // await ref.read(tabListProvider.notifier).fetch();
                   final groupId = await groupTabs(
-                      GroupOptions(tabIds: [tabs[0].id, tabs[2].id]));
+                      TabsGroupOptions(tabIds: [tabs[0].id, tabs[2].id]));
                   debugPrint(groupId.toString());
+                  await updateTabGroups(
+                    groupId,
+                    TabGroupsUpdateProperties(
+                      title: 'G1',
+                      color: TabGroupColor.green.name,
+                    ),
+                  );
                 },
                 child: const Icon(Icons.auto_awesome),
               ),
@@ -77,12 +84,14 @@ class PopupScreen extends HookConsumerWidget {
       ),
       subtitle: Text('${tab.windowId}/${tab.groupId}/${tab.index}/${tab.id}'),
       onTap: () async {
-        await hightlightTabs(HighlightInfo(
+        await hightlightTabs(TabsHighlightInfo(
           tabs: [tab.index],
           windowId: tab.windowId,
         ));
         await updateWindows(
-            tab.windowId, UpdateInfo(drawAttention: true, focused: true));
+          tab.windowId,
+          WindowsUpdateInfo(drawAttention: true, focused: true),
+        );
       },
     );
   }
