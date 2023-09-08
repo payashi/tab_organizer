@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -10,7 +9,8 @@ import 'package:tab_organizer/providers/tab_list_provider.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 
-void main() {
+void main() async {
+  await dotenv.load();
   runApp(
     const ProviderScope(
       child: MaterialApp(
@@ -27,10 +27,10 @@ class PopupScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to tab update event
     document.on['tabUpdated'].listen((Event event) {
-      ref.read(tabListProvider.notifier).fetch();
+      ref.read(tabListProvider.notifier).fetchTabs();
     });
     return ref.watch(tabListProvider).when(
-          loading: CircularProgressIndicator.new,
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => Text(error.toString()),
           data: (tabs) {
             return Scaffold(

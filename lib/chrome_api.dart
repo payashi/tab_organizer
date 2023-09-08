@@ -4,11 +4,9 @@
 library chrome_api;
 
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
-import 'package:tab_organizer/models/chrome_tab_group.dart';
 import 'models/chrome_tab.dart';
 
 @JS('queryTabs')
