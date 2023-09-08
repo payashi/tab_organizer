@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tab_organizer/providers/tab_list_provider.dart';
+
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
 
 void main() {
   runApp(
@@ -19,6 +24,14 @@ class PopupScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Listen to tab update event
+    document.on['tabUpdated'].listen((Event event) {
+      // final status = (event as CustomEvent).detail['changeInfo']['status'];
+      // if (status == 'complete') {
+      //   ref.read(tabListProvider.notifier).fetch();
+      // }
+      ref.read(tabListProvider.notifier).fetch();
+    });
     return Scaffold(
       body: const Column(
         children: [
