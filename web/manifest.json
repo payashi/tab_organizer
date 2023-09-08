@@ -22,6 +22,7 @@
             "128": "icons/Icon-192.png"
     },
     "permissions": [
-        "tabs"
+        "tabs",
+        "tabGroups"
     ]
 }

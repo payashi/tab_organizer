@@ -146,12 +146,12 @@ class WindowsUpdateInfo {
 @anonymous
 class TabGroupsUpdateProperties {
   external bool? collapsed;
-  external TabGroupColor? color;
+  external String? color;
   external String? title;
 
   external factory TabGroupsUpdateProperties({
     bool? collapsed,
-    TabGroupColor? color,
+    String? color,
     String? title,
   });
 }
