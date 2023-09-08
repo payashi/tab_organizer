@@ -26,42 +26,32 @@ class PopupScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to tab update event
     document.on['tabUpdated'].listen((Event event) {
-      // final status = (event as CustomEvent).detail['changeInfo']['status'];
-      // if (status == 'complete') {
-      //   ref.read(tabListProvider.notifier).fetch();
-      // }
       ref.read(tabListProvider.notifier).fetch();
     });
-    return Scaffold(
-      body: const Column(
-        children: [
-          TabListView(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Future.delayed(const Duration(seconds: 1));
-          await ref.read(tabListProvider.notifier).fetch();
-        },
-        child: const Icon(Icons.auto_awesome),
-      ),
-    );
-  }
-}
-
-class TabListView extends HookConsumerWidget {
-  const TabListView({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(tabListProvider).when(
           loading: CircularProgressIndicator.new,
           error: (error, _) => Text(error.toString()),
           data: (tabs) {
-            return Flexible(
-              child: ListView.builder(
-                itemCount: tabs.length,
-                itemBuilder: (context, idx) => _tile(tabs[idx]),
+            return Scaffold(
+              body: Column(
+                children: [
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: tabs.length,
+                      itemBuilder: (context, idx) => _tile(tabs[idx]),
+                    ),
+                  ),
+                ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  // await Future.delayed(const Duration(seconds: 1));
+                  // await ref.read(tabListProvider.notifier).fetch();
+                  final groupId = await groupTabs(
+                      GroupOptions(tabIds: [tabs[0].id, tabs[2].id]));
+                  debugPrint(groupId.toString());
+                },
+                child: const Icon(Icons.auto_awesome),
               ),
             );
           },
@@ -85,11 +75,14 @@ class TabListView extends HookConsumerWidget {
         tab.title,
         overflow: TextOverflow.ellipsis,
       ),
-      onTap: () {
-        hightlightTab(HighlightOptions(
-          tabs: tab.index,
+      subtitle: Text('${tab.windowId}/${tab.groupId}/${tab.index}/${tab.id}'),
+      onTap: () async {
+        await hightlightTabs(HighlightInfo(
+          tabs: [tab.index],
           windowId: tab.windowId,
         ));
+        await updateWindows(
+            tab.windowId, UpdateInfo(drawAttention: true, focused: true));
       },
     );
   }
