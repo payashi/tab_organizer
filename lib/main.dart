@@ -46,17 +46,7 @@ class PopupScreen extends HookConsumerWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  // await ref.read(tabListProvider.notifier).fetch();
-                  final groupId = await groupTabs(
-                      TabsGroupOptions(tabIds: [tabs[0].id, tabs[2].id]));
-                  debugPrint(groupId.toString());
-                  await updateTabGroups(
-                    groupId,
-                    TabGroupsUpdateProperties(
-                      title: 'G1',
-                      color: TabGroupColor.green.name,
-                    ),
-                  );
+                  await ref.read(tabListProvider.notifier).classify();
                 },
                 child: const Icon(Icons.auto_awesome),
               ),
