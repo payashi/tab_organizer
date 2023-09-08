@@ -2,6 +2,7 @@ import 'dart:js_interop';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tab_organizer/chrome_api.dart';
+import 'package:tab_organizer/models/category_info.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,12 +10,10 @@ import 'package:dio/dio.dart';
 
 final apiUrl = dotenv.get('API_BASE_URL');
 
-typedef CategoryMap = Map<num, List<ChromeTab>>;
-
-class CategoryMapNotifier extends StateNotifier<AsyncValue<CategoryMap>> {
+class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
   static final dio = Dio();
 
-  CategoryMapNotifier() : super(const AsyncValue.loading()) {
+  CategoryInfoNotifier() : super(const AsyncValue.loading()) {
     fetchTabs();
   }
 
@@ -28,8 +27,8 @@ class CategoryMapNotifier extends StateNotifier<AsyncValue<CategoryMap>> {
       return;
     }
 
-    // The state must be CategoryMap when calling API
-    final tabs = state.value!.entries.fold<List<ChromeTab>>(
+    // The state must be CategoryInfo when calling API
+    final tabs = state.value!.tabs.entries.fold<List<ChromeTab>>(
       [],
       (acc, el) => [...acc, ...el.value],
     );
@@ -47,7 +46,7 @@ class CategoryMapNotifier extends StateNotifier<AsyncValue<CategoryMap>> {
       final Map<String, List<String>> results =
           response.data!.map((k, v) => MapEntry(k, v));
 
-      late final num unclassified;
+      late final int unclassified;
 
       // Fill Category field to each Url
       for (var entry in results.entries) {
@@ -58,7 +57,7 @@ class CategoryMapNotifier extends StateNotifier<AsyncValue<CategoryMap>> {
         final tabIds = filteredTabs.map((tab) => tab.id).toList();
         final groupId = await groupTabs(TabsGroupOptions(
           tabIds: tabIds,
-          properties: TabsGroupOptionsCreateProperties(
+          createProperties: TabsGroupOptionsCreateProperties(
             windowId: filteredTabs.first.windowId,
           ),
         ));
@@ -79,5 +78,5 @@ class CategoryMapNotifier extends StateNotifier<AsyncValue<CategoryMap>> {
 }
 
 final categoryMapNotifier =
-    StateNotifierProvider<CategoryMapNotifier, AsyncValue<CategoryMap>>(
-        (ref) => CategoryMapNotifier());
+    StateNotifierProvider<CategoryInfoNotifier, AsyncValue<CategoryInfo>>(
+        (ref) => CategoryInfoNotifier());

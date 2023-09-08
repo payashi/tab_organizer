@@ -21,9 +21,9 @@ ChromeTabGroup _$ChromeTabGroupFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ChromeTabGroup {
   bool get collapsed => throw _privateConstructorUsedError;
-  TabGroupColor get color => throw _privateConstructorUsedError;
-  num get id => throw _privateConstructorUsedError;
-  num get windowId => throw _privateConstructorUsedError;
+  String get color => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  int get windowId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,12 +38,7 @@ abstract class $ChromeTabGroupCopyWith<$Res> {
           ChromeTabGroup value, $Res Function(ChromeTabGroup) then) =
       _$ChromeTabGroupCopyWithImpl<$Res, ChromeTabGroup>;
   @useResult
-  $Res call(
-      {bool collapsed,
-      TabGroupColor color,
-      num id,
-      num windowId,
-      String title});
+  $Res call({bool collapsed, String color, int id, int windowId, String title});
 }
 
 /// @nodoc
@@ -73,15 +68,15 @@ class _$ChromeTabGroupCopyWithImpl<$Res, $Val extends ChromeTabGroup>
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
-              as TabGroupColor,
+              as String,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       windowId: null == windowId
           ? _value.windowId
           : windowId // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -98,12 +93,7 @@ abstract class _$$_ChromeTabGroupCopyWith<$Res>
       __$$_ChromeTabGroupCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool collapsed,
-      TabGroupColor color,
-      num id,
-      num windowId,
-      String title});
+  $Res call({bool collapsed, String color, int id, int windowId, String title});
 }
 
 /// @nodoc
@@ -131,15 +121,15 @@ class __$$_ChromeTabGroupCopyWithImpl<$Res>
       color: null == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
-              as TabGroupColor,
+              as String,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       windowId: null == windowId
           ? _value.windowId
           : windowId // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -164,11 +154,11 @@ class _$_ChromeTabGroup implements _ChromeTabGroup {
   @override
   final bool collapsed;
   @override
-  final TabGroupColor color;
+  final String color;
   @override
-  final num id;
+  final int id;
   @override
-  final num windowId;
+  final int windowId;
   @override
   @JsonKey()
   final String title;
@@ -214,9 +204,9 @@ class _$_ChromeTabGroup implements _ChromeTabGroup {
 abstract class _ChromeTabGroup implements ChromeTabGroup {
   const factory _ChromeTabGroup(
       {required final bool collapsed,
-      required final TabGroupColor color,
-      required final num id,
-      required final num windowId,
+      required final String color,
+      required final int id,
+      required final int windowId,
       final String title}) = _$_ChromeTabGroup;
 
   factory _ChromeTabGroup.fromJson(Map<String, dynamic> json) =
@@ -225,11 +215,11 @@ abstract class _ChromeTabGroup implements ChromeTabGroup {
   @override
   bool get collapsed;
   @override
-  TabGroupColor get color;
+  String get color;
   @override
-  num get id;
+  int get id;
   @override
-  num get windowId;
+  int get windowId;
   @override
   String get title;
   @override

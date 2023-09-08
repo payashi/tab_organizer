@@ -7,25 +7,42 @@ import 'dart:convert';
 
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
-import 'package:tab_organizer/providers/category_map_notifier.dart';
+import 'package:tab_organizer/models/category_info.dart';
 import 'models/chrome_tab.dart';
 
 @JS('queryTabs')
 external Object _queryTabs(TabsQueryInfo info);
 
-Future<CategoryMap> queryTabs(TabsQueryInfo info) async {
+Future<CategoryInfo> queryTabs(TabsQueryInfo info) async {
   final response = await promiseToFuture<String>(_queryTabs(info));
-  final tabs = (json.decode(response) as List)
+  final flatTabs = (json.decode(response) as List)
       .map<ChromeTab>((i) => ChromeTab.fromJson(i))
       .toList();
 
-  // Convert List<ChromeTab> to Map<num, List<ChromeTab>>
-  CategoryMap categoryMap = <num, List<ChromeTab>>{};
-  for (final tab in tabs) {
-    categoryMap.putIfAbsent(tab.groupId, () => []).add(tab);
+  final tabs = <int, List<ChromeTab>>{};
+  for (final tab in flatTabs) {
+    tabs.putIfAbsent(tab.groupId, () => []).add(tab);
   }
 
-  return categoryMap;
+  final titles = <int, String>{};
+  for (final groupId in tabs.keys) {
+    String title;
+    if (groupId == -1) {
+      title = 'Ungrouped';
+    } else {
+      title = await getTabGroupTitle(groupId);
+    }
+    titles.putIfAbsent(groupId, () => title);
+  }
+
+  return CategoryInfo(tabs: tabs, groupTitles: titles);
+}
+
+@JS('getTabGroupTitle')
+external Object _getTabGroupTitle(int groupId);
+
+Future<String> getTabGroupTitle(int groupId) async {
+  return await promiseToFuture<String>(_getTabGroupTitle(groupId));
 }
 
 @JS('chrome.tabs.highlight')
@@ -37,51 +54,51 @@ Future<void> hightlightTabs(TabsHighlightInfo info) async {
 
 @JS('chrome.tabs.move')
 external Object _moveTabs(
-  List<num> tabIds,
+  List<int> tabIds,
   TabsMoveProperties properties,
 );
 
-Future<void> moveTabs(List<num> tabIds, TabsMoveProperties properties) async {
+Future<void> moveTabs(List<int> tabIds, TabsMoveProperties properties) async {
   _moveTabs(tabIds, properties);
 }
 
 @JS('chrome.tabs.group')
 external Object _groupTabs(TabsGroupOptions options);
 
-Future<num> groupTabs(TabsGroupOptions options) async {
-  final groupId = await promiseToFuture<num>(_groupTabs(options));
+Future<int> groupTabs(TabsGroupOptions options) async {
+  final groupId = await promiseToFuture<int>(_groupTabs(options));
   return groupId;
 }
 
 @JS('chrome.windows.update')
 external Object _updateWindows(
-  num windowId,
+  int windowId,
   WindowsUpdateInfo info,
 );
 
-Future<void> updateWindows(num windowId, WindowsUpdateInfo info) async {
+Future<void> updateWindows(int windowId, WindowsUpdateInfo info) async {
   _updateWindows(windowId, info);
 }
 
 @JS('chrome.tabGroups.update')
 external Object _updateTabGroups(
-  num groupId,
+  int groupId,
   TabGroupsUpdateProperties properties,
 );
 
 Future<void> updateTabGroups(
-    num groupId, TabGroupsUpdateProperties properties) async {
+    int groupId, TabGroupsUpdateProperties properties) async {
   _updateTabGroups(groupId, properties);
 }
 
 @JS('chrome.tabGroups.move')
 external Object _moveTabGroups(
-  num groupId,
+  int groupId,
   TabGroupsMoveProperties properties,
 );
 
 Future<void> moveTabGroups(
-    num groupId, TabGroupsMoveProperties properties) async {
+    int groupId, TabGroupsMoveProperties properties) async {
   _moveTabGroups(groupId, properties);
 }
 
@@ -92,9 +109,9 @@ class TabsQueryInfo {
   external bool? get currentWindow;
   external bool? get highlited;
 
-  external num? get index;
-  external num? get groupId;
-  external num? get windowId;
+  external int? get index;
+  external int? get groupId;
+  external int? get windowId;
 
   external String? get title;
   external String? get url;
@@ -103,9 +120,9 @@ class TabsQueryInfo {
     bool? active,
     bool? currentWindow,
     bool? highlighted,
-    num? index,
-    num? groupId,
-    num? windowId,
+    int? index,
+    int? groupId,
+    int? windowId,
     String? title,
     String? url,
   });
@@ -114,40 +131,40 @@ class TabsQueryInfo {
 @JS()
 @anonymous
 class TabsHighlightInfo {
-  external List<num> get tabs; // tab indicies to highlight
-  external num? get windowId; // the window that contains the tabs
+  external List<int> get tabs; // tab indicies to highlight
+  external int? get windowId; // the window that contains the tabs
 
-  external factory TabsHighlightInfo({List<num> tabs, num? windowId});
+  external factory TabsHighlightInfo({List<int> tabs, int? windowId});
 }
 
 @JS()
 @anonymous
 class TabsMoveProperties {
-  external num get index;
-  external num? get windowId;
+  external int get index;
+  external int? get windowId;
 
-  external factory TabsMoveProperties({num index, num? windowId});
+  external factory TabsMoveProperties({int index, int? windowId});
 }
 
 @JS()
 @anonymous
 class TabsGroupOptions {
-  external TabsGroupOptionsCreateProperties? properties;
-  external num? groupId;
-  external List<num> tabIds;
+  external TabsGroupOptionsCreateProperties? createProperties;
+  external int? groupId;
+  external List<int> tabIds;
 
   external factory TabsGroupOptions(
-      {TabsGroupOptionsCreateProperties? properties,
-      num? groupId,
-      List<num> tabIds});
+      {TabsGroupOptionsCreateProperties? createProperties,
+      int? groupId,
+      List<int> tabIds});
 }
 
 @JS()
 @anonymous
 class TabsGroupOptionsCreateProperties {
-  external num? windowId;
+  external int? windowId;
 
-  external factory TabsGroupOptionsCreateProperties({num? windowId});
+  external factory TabsGroupOptionsCreateProperties({int? windowId});
 }
 
 @JS()
@@ -176,11 +193,11 @@ class TabGroupsUpdateProperties {
 @JS()
 @anonymous
 class TabGroupsMoveProperties {
-  external num index;
-  external num? windowId;
+  external int index;
+  external int? windowId;
 
   external factory TabGroupsMoveProperties({
-    num index,
-    num? windowId,
+    int index,
+    int? windowId,
   });
 }

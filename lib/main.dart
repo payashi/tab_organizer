@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tab_organizer/chrome_api.dart';
+import 'package:tab_organizer/models/category_info.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -30,24 +31,24 @@ class PopupScreen extends HookConsumerWidget {
       ref.read(categoryMapNotifier.notifier).fetchTabs();
     });
 
-    return ref.watch<AsyncValue<CategoryMap>>(categoryMapNotifier).when(
+    return ref.watch<AsyncValue<CategoryInfo>>(categoryMapNotifier).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => Scaffold(
             body: Center(child: Text(error.toString())),
           ),
-          data: (categoryMap) {
+          data: (info) {
+            final allTabs = info.tabs.entries
+                .fold<List<ChromeTab>>([], (acc, el) => [...acc, ...el.value]);
             return Scaffold(
-              body: SingleChildScrollView(
-                child: Column(
-                  children: categoryMap.entries.map<Widget>((entry) {
-                    final tabs = entry.value;
-                    return ExpansionTile(
-                      initiallyExpanded: true,
-                      title: Text(entry.key.toString()),
-                      children: tabs.map((tab) => _tile(tab)).toList(),
-                    );
-                  }).toList(),
-                ),
+              body: Column(
+                children: [
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: allTabs.length,
+                      itemBuilder: (context, idx) => _tile(allTabs[idx]),
+                    ),
+                  ),
+                ],
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
