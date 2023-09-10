@@ -26,7 +26,7 @@ class PopupScreen extends HookConsumerWidget {
           loading: () => const LoadingScreen(),
           error: (error, _) => Scaffold(
             body: Center(
-              child: Text(
+              child: SelectableText(
                 error.toString(),
               ),
             ),

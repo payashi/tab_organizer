@@ -19,7 +19,9 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
 
   Future<void> fetchTabs() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => queryTabs(TabsQueryInfo()));
+    state = await AsyncValue.guard(() => queryTabs(
+          TabsQueryInfo(windowType: 'normal'),
+        ));
   }
 
   Future<void> classify() async {
@@ -49,7 +51,7 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
       final Map<String, List<String>> results =
           response.data!.map((k, v) => MapEntry(k, v));
 
-      late final int unclassified;
+      int unclassified = -1;
 
       // Fill Category field to each Url
       for (var entry in results.entries) {
@@ -72,7 +74,9 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
           unclassified = groupId;
         }
       }
-      await moveTabGroups(unclassified, TabGroupsMoveProperties(index: -1));
+      if (unclassified != -1) {
+        await moveTabGroups(unclassified, TabGroupsMoveProperties(index: -1));
+      }
       await fetchTabs();
     } catch (err, stack) {
       state = AsyncValue.error(err, stack);

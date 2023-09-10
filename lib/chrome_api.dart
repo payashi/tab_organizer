@@ -115,6 +115,7 @@ class TabsQueryInfo {
 
   external String? get title;
   external String? get url;
+  external String? get windowType;
 
   external factory TabsQueryInfo({
     bool? active,
@@ -125,6 +126,7 @@ class TabsQueryInfo {
     int? windowId,
     String? title,
     String? url,
+    String? windowType,
   });
 }
 
