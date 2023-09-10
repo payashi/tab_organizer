@@ -19,7 +19,9 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
 
   Future<void> fetchTabs() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => queryTabs(TabsQueryInfo()));
+    state = await AsyncValue.guard(() => queryTabs(
+          TabsQueryInfo(windowType: 'normal'),
+        ));
   }
 
   Future<void> classify() async {

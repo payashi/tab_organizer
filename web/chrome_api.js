@@ -1,5 +1,6 @@
 async function queryTabs(options) {
     let tabs = await chrome.tabs.query(options);
+
     let data = tabs.map(tab => {
         return {
             active: tab.active,
