@@ -39,9 +39,12 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
       Response<Map<String, dynamic>> response = await dio.post(
         '$apiUrl/classify',
         data: {'urls': tabs.map((tab) => tab.url).toList()},
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-        }),
+        options: Options(
+          headers: {
+            // 'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        ),
       );
       final Map<String, List<String>> results =
           response.data!.map((k, v) => MapEntry(k, v));
@@ -77,6 +80,6 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
   }
 }
 
-final categoryMapNotifier =
+final categoryInfoNotifier =
     StateNotifierProvider<CategoryInfoNotifier, AsyncValue<CategoryInfo>>(
         (ref) => CategoryInfoNotifier());

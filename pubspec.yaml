@@ -33,3 +33,5 @@ flutter:
 
   assets:
     - .env
+    - assets/tabby.png
+    - assets/engineer.png
