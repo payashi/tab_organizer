@@ -80,6 +80,6 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
   }
 }
 
-final categoryInfoNotifier =
+final categoryInfoProvider =
     StateNotifierProvider<CategoryInfoNotifier, AsyncValue<CategoryInfo>>(
         (ref) => CategoryInfoNotifier());
