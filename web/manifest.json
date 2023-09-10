@@ -24,5 +24,8 @@
     "permissions": [
         "tabs",
         "tabGroups"
+    ],
+    "host_permissions": [
+        "https://tabooo-api-s2tocqio2a-an.a.run.app/*"
     ]
 }
