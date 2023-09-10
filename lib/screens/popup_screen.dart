@@ -6,7 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 
-import 'package:tab_organizer/providers/category_info_notifier.dart';
+import 'package:tab_organizer/providers/category_info_provider.dart';
+import 'package:tab_organizer/providers/tab_update_provider.dart';
+import 'package:tab_organizer/screens/loading_screen.dart';
 import 'package:tab_organizer/screens/personality_screen.dart';
 
 class PopupScreen extends HookConsumerWidget {
@@ -16,15 +18,12 @@ class PopupScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to tab update event
     document.on['tabUpdated'].listen((Event event) {
-      ref.read(categoryInfoNotifier.notifier).fetchTabs();
+      ref.read(categoryInfoProvider.notifier).fetchTabs();
+      ref.read(tabUpdateProvider.notifier).update((state) => false);
     });
 
-    return ref.watch(categoryInfoNotifier).when(
-          loading: () => const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
+    return ref.watch(categoryInfoProvider).when(
+          loading: () => const LoadingScreen(),
           error: (error, _) => Scaffold(
             body: Center(
               child: Text(
@@ -33,38 +32,44 @@ class PopupScreen extends HookConsumerWidget {
             ),
           ),
           data: (info) {
-            final allTabs = info.tabs.entries
-                .fold<List<ChromeTab>>([], (acc, el) => [...acc, ...el.value]);
+            final infoTabs = info.tabs.entries.toList();
+            final bool update = ref.watch(tabUpdateProvider);
             return Scaffold(
-              body: Column(
-                children: [
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: allTabs.length,
-                      itemBuilder: (context, idx) => _tile(allTabs[idx]),
-                    ),
-                  ),
-                ],
+              body: SingleChildScrollView(
+                child: Column(
+                  children: infoTabs.map<Widget>((entry) {
+                    final tabs = entry.value;
+                    return ExpansionTile(
+                      initiallyExpanded: true,
+                      title: Text(info.groupTitles[entry.key] ?? ''),
+                      children: tabs.map((tab) => _tile(tab)).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
               floatingActionButton: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FloatingActionButton(
-                    tooltip: '性格診断',
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const PersonalityScreen(),
-                        ),
-                      );
-                    },
-                    child: const Icon(Icons.face),
-                  ),
+                  if (update)
+                    FloatingActionButton(
+                      tooltip: '性格診断',
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const PersonalityScreen(),
+                          ),
+                        );
+                      },
+                      child: const Icon(Icons.face),
+                    ),
                   const SizedBox(height: 16),
                   FloatingActionButton(
                     tooltip: '自動整理',
                     onPressed: () async {
-                      await ref.read(categoryInfoNotifier.notifier).classify();
+                      await ref.read(categoryInfoProvider.notifier).classify();
+                      ref
+                          .read(tabUpdateProvider.notifier)
+                          .update((state) => true);
                     },
                     child: const Icon(Icons.auto_awesome),
                   ),
