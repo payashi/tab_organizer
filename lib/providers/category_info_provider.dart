@@ -49,7 +49,7 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
       final Map<String, List<String>> results =
           response.data!.map((k, v) => MapEntry(k, v));
 
-      late final int unclassified;
+      int unclassified = -1;
 
       // Fill Category field to each Url
       for (var entry in results.entries) {
@@ -72,7 +72,9 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
           unclassified = groupId;
         }
       }
-      await moveTabGroups(unclassified, TabGroupsMoveProperties(index: -1));
+      if (unclassified != -1) {
+        await moveTabGroups(unclassified, TabGroupsMoveProperties(index: -1));
+      }
       await fetchTabs();
     } catch (err, stack) {
       state = AsyncValue.error(err, stack);
