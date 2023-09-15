@@ -15,7 +15,6 @@ dependencies:
   js: ^0.6.7
   freezed_annotation: ^2.4.1
   dio: ^5.3.2
-  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +31,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - .env
     - assets/tabby.png
     - assets/engineer.png

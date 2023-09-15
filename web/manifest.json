@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Tabooo",
     "description": "開いているChromeタブをトピック分類して自動で整理してくれるアプリです。",
     "content_security_policy": {
@@ -24,8 +24,5 @@
     "permissions": [
         "tabs",
         "tabGroups"
-    ],
-    "host_permissions": [
-        "https://tabooo-api-s2tocqio2a-an.a.run.app/*"
     ]
 }

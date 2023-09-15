@@ -1,6 +1,5 @@
 import 'dart:js_interop';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tab_organizer/chrome_api.dart';
 import 'package:tab_organizer/models/category_info.dart';
 import 'package:tab_organizer/models/chrome_tab.dart';
@@ -8,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:dio/dio.dart';
 
-final apiUrl = dotenv.get('API_BASE_URL');
+const apiUrl = "https://tabooo-api-s2tocqio2a-an.a.run.app";
 
 class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
   static final dio = Dio();
