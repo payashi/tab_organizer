@@ -24,9 +24,7 @@ class CategoryInfoNotifier extends StateNotifier<AsyncValue<CategoryInfo>> {
   }
 
   Future<void> classify() async {
-    if (state.isUndefinedOrNull) {
-      return;
-    }
+    if (state.value == null) return;
 
     // The state must be CategoryInfo when calling API
     final tabs = state.value!.tabs.entries.fold<List<ChromeTab>>(
